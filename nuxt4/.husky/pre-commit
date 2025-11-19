@@ -6,25 +6,27 @@ if command -v bun &>/dev/null; then
   RUNNER="bun x"
 elif command -v pnpm &>/dev/null; then
   RUNNER="pnpm dlx"
+elif command -v yarn &>/dev/null; then
+  RUNNER="yarn dlx"
 else
   RUNNER="npx"
 fi
 
-echo "🔍 Running lint-staged checks using [$RUNNER]..."
+echo "🔍 Running pre-commit checks using [$RUNNER]..."
 
-# 1️⃣ 執行 `lint-staged`
-echo "🔍 Running lint-staged..."
-$RUNNER lint-staged
+# 1️⃣ 執行 pretty-quick
+echo "🎨 Running pretty-quick..."
+$RUNNER pretty-quick --staged
 if [ $? -ne 0 ]; then
-  echo "❌ Lint-staged check failed in $project. Commit aborted."
+  echo "❌ Pretty-quick check failed. Commit aborted."
   exit 1
 fi
 
-# 2️⃣ 執行 precommit
-echo "🔧 Running precommit..."
-$RUNNER precommit
+# 2️⃣ 執行 lint-staged
+echo "🔍 Running lint-staged..."
+$RUNNER lint-staged
 if [ $? -ne 0 ]; then
-  echo "❌ precommit failed in $project. Commit aborted."
+  echo "❌ Lint-staged check failed. Commit aborted."
   exit 1
 fi
 
